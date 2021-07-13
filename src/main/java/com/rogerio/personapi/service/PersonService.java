@@ -3,12 +3,14 @@ package com.rogerio.personapi.service;
 import com.rogerio.personapi.dto.request.PersonDTO;
 import com.rogerio.personapi.dto.response.MessageResponseDTO;
 import com.rogerio.personapi.entity.Person;
+import com.rogerio.personapi.exception.PersonNotFoundException;
 import com.rogerio.personapi.mapper.PersonMapper;
 import com.rogerio.personapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,5 +38,13 @@ public class PersonService {
         List<Person> allPeople = personRepository.findAll();
         return allPeople.stream()
                 .map(personMapper::toDTO).collect(Collectors.toList());
+    }
+
+    public PersonDTO findById(Long id) throws PersonNotFoundException {
+        Optional<Person> optinonalPerson = personRepository.findById(id);
+        if (optinonalPerson.isEmpty()){
+            throw new PersonNotFoundException(id);
+        }
+        return personMapper.toDTO(optinonalPerson.get());
     }
 }
