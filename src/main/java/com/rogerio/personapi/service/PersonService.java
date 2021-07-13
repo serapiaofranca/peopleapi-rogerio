@@ -41,10 +41,8 @@ public class PersonService {
     }
 
     public PersonDTO findById(Long id) throws PersonNotFoundException {
-        Optional<Person> optinonalPerson = personRepository.findById(id);
-        if (optinonalPerson.isEmpty()){
-            throw new PersonNotFoundException(id);
-        }
-        return personMapper.toDTO(optinonalPerson.get());
+        Person person = personRepository.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException(id));
+        return personMapper.toDTO(person);
     }
 }
